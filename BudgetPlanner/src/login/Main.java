@@ -1,6 +1,8 @@
 package login;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -26,7 +28,7 @@ public class Main extends Application {
     private User loggedUser;
     private final double MINIMUM_WINDOW_WIDTH = 390.0;
     private final double MINIMUM_WINDOW_HEIGHT = 500.0;
-
+    public Map<String, Integer> countLogin = new HashMap<>();
     /**
      * @param args the command line arguments
      */
@@ -54,18 +56,37 @@ public class Main extends Application {
         
     public boolean userLogging(String userId, String password){
         System.out.println("got user id " + userId + " password " + password);
-        if (Authenticator.validate(userId, password)) {
+        if (countLogin.containsKey(userId)&& (countLogin.get(userId)>=3)){
+               System.out.println("Tried more than 3 times!");
+               return false;
+           }
+        if (Authenticator.getInstance().validate(userId, password)) {
             System.out.println("OK");
             loggedUser = User.of(userId);
             gotoProfile();
             return true;
         } else {
+           
+            //add count 3 times fail
             System.out.println("NOT OK");
+            if (countLogin.containsKey(userId)){
+                 if ((countLogin.get(userId))==1)
+                 {
+                     countLogin.put(userId,2);
+                 }else{
+                     countLogin.put(userId,3);
+                     System.out.println("Can Not try!");
+                 }
+            }
+            else{
+                countLogin.put(userId,1);
+            }
             return false;
         }
     }
     
     void userLogout(){
+        countLogin = new HashMap<>();
         loggedUser = null;
         gotoLogin();
     }
