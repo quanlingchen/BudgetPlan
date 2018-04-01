@@ -21,7 +21,14 @@ public class User {
         }
         return user;
     }
-
+    public static User off(String id) {
+        User user = USERS.get(id);
+        if (user != null) {
+            //user = new User(id);
+            USERS.remove(id);
+        }
+        return user;
+    }
     private User(String id) {
         this.id = id;
     }
@@ -30,10 +37,13 @@ public class User {
     public String getId() {
         return id;
     }
+    private int question = 1;
+    private String answer ="";
     private String email = "";
     private String phone = "";
     private boolean subscribed;
     private String address = "";
+    private String security = "";
 
     /**
      * @return the email
@@ -77,6 +87,19 @@ public class User {
         this.subscribed = subscribed;
     }
 
+    /**
+     * @return the security
+     */
+    public String getSecurity() {
+        return security;
+    }
+
+    /**
+     * @param security the security to set
+     */
+    public void setSecurity(String security) {
+        this.security = security;
+    }
     /**
      * @return the address
      */
