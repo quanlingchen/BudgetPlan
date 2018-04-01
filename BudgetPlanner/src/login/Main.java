@@ -58,17 +58,18 @@ public class Main extends Application {
             return false;
         if(Authenticator.getInstance().addUser(userId)){
             loggedUser = User.of(userId);
-            gotoProfile();
+            gotoProfile(true);
             return true;
         } else return false;
     } 
+    
     public boolean userLoggingA(String userId, String answer){
         
         boolean rtn = !Authenticator.getInstance().getAnswer(userId).equals("")
                 && Authenticator.getInstance().getAnswer(userId).equals(answer);
         if(rtn){
             loggedUser = User.of(userId);
-            gotoProfile();
+            gotoProfile(true);
         }
         return rtn;
     }
@@ -81,7 +82,7 @@ public class Main extends Application {
         if (Authenticator.getInstance().validate(userId, password)) {
             System.out.println("OK");
             loggedUser = User.of(userId);
-            gotoProfile();
+            gotoProfile(false);
             return true;
         } else {
            
@@ -109,11 +110,15 @@ public class Main extends Application {
         gotoLogin();
     }
     
-    private void gotoProfile() {
+    private void gotoProfile(boolean s) {
         try {
             ProfileController profile = (ProfileController) replaceSceneContent("Profile.fxml");
             profile.setApp(this);
             this.stage.setTitle("Profile");
+            if(s) {
+                this.stage.setTitle("Sign up");
+                profile.setWelcome("Please fill up profile.");
+            }
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

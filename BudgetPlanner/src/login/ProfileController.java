@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import login.model.User;
+import login.security.Authenticator;
 
 /**
  * Profile Controller.
@@ -31,6 +32,8 @@ public class ProfileController extends AnchorPane {
     @FXML
     private TextField email;
     @FXML
+    private TextField security;
+    @FXML
     private TextArea address;
     @FXML
     private CheckBox subscribed;
@@ -38,13 +41,17 @@ public class ProfileController extends AnchorPane {
     private Hyperlink logout;
     @FXML 
     private Button update;
-    
+    @FXML 
+    private Button reset;
     @FXML 
     private Label success;
+    @FXML 
+    private Label welcome;
     
     private Main application;
-    
+    private boolean hasUpdated;
     public void setApp(Main application){
+        System.out.println("in profile controller");
         this.application = application;
         User loggedUser = application.getLoggedUser();
         user.setText(loggedUser.getId());
@@ -53,8 +60,11 @@ public class ProfileController extends AnchorPane {
         if (loggedUser.getAddress() != null) {
             address.setText(loggedUser.getAddress());
         }
+        security.setText(loggedUser.getSecurity());
+        
         subscribed.setSelected(loggedUser.isSubscribed());
         success.setOpacity(0);
+        hasUpdated = false;
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -66,21 +76,44 @@ public class ProfileController extends AnchorPane {
         if (application == null){
             return;
         }
-        
+        if(welcome.getText().equals("Please fill up profile.") && !hasUpdated)
+        {
+            //remove user
+            System.out.println("remove user" + Authenticator.getInstance().removeUser(user.getText()));
+        }
         application.userLogout();
     }
-    
+    public void processReset(ActionEvent event) {
+        if (application == null){
+            animateMessage();
+            return;
+        }
+        User loggedUser = application.getLoggedUser();
+        user.setText(loggedUser.getId());
+        email.setText(loggedUser.getEmail());
+        phone.setText(loggedUser.getPhone());
+        if (loggedUser.getAddress() != null) {
+            address.setText(loggedUser.getAddress());
+        }
+        security.setText(loggedUser.getSecurity());
+        
+        subscribed.setSelected(loggedUser.isSubscribed());
+        animateMessage();
+    }
     public void processUpdate(ActionEvent event) {
         if (application == null){
             animateMessage();
             return;
         }
         User loggedUser = application.getLoggedUser();
+        //loggedUser.set
         loggedUser.setEmail(email.getText());
         loggedUser.setPhone(phone.getText());
         loggedUser.setSubscribed(subscribed.isSelected());
         loggedUser.setAddress(address.getText());
+        loggedUser.setSecurity(security.getText());
         animateMessage();
+        hasUpdated = true;
     }
 
     private void animateMessage() {
@@ -88,5 +121,12 @@ public class ProfileController extends AnchorPane {
         ft.setFromValue(0.0);
         ft.setToValue(1);
         ft.play();
+    }
+    public void setWelcome(String value){
+        welcome.setText(value);
+    }
+    private boolean checkChange(){
+        boolean rtn = false;
+        return rtn;
     }
 }
