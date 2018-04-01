@@ -53,7 +53,25 @@ public class Main extends Application {
     public User getLoggedUser() {
         return loggedUser;
     }
+    public boolean addUser(String userId){
+        if (Authenticator.getInstance().isExist(userId))
+            return false;
+        if(Authenticator.getInstance().addUser(userId)){
+            loggedUser = User.of(userId);
+            gotoProfile();
+            return true;
+        } else return false;
+    } 
+    public boolean userLoggingA(String userId, String answer){
         
+        boolean rtn = !Authenticator.getInstance().getAnswer(userId).equals("")
+                && Authenticator.getInstance().getAnswer(userId).equals(answer);
+        if(rtn){
+            loggedUser = User.of(userId);
+            gotoProfile();
+        }
+        return rtn;
+    }
     public boolean userLogging(String userId, String password){
         System.out.println("got user id " + userId + " password " + password);
         if (countLogin.containsKey(userId)&& (countLogin.get(userId)>=3)){
