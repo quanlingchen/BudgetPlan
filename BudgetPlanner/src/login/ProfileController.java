@@ -28,7 +28,9 @@ public class ProfileController extends AnchorPane {
     @FXML
     private TextField user;
     @FXML
-    private TextField phone;
+    private ComboBox quiz;//TextField phone;
+    @FXML
+    private TextField answer;
     @FXML
     private TextField email;
     @FXML
@@ -47,24 +49,38 @@ public class ProfileController extends AnchorPane {
     private Label success;
     @FXML 
     private Label welcome;
+    @FXML 
+    private Label labpw;
     
     private Main application;
     private boolean hasUpdated;
     public void setApp(Main application){
         System.out.println("in profile controller");
         this.application = application;
+        System.out.println("1");
         User loggedUser = application.getLoggedUser();
-        user.setText(loggedUser.getId());
-        email.setText(loggedUser.getEmail());
-        phone.setText(loggedUser.getPhone());
+        System.out.println("2" + loggedUser);
+        user.setText(loggedUser.getId());System.out.println("3");
+        email.setText(loggedUser.getEmail());System.out.println("4");
+        answer.setText(loggedUser.getAnswer());System.out.println("5");
+        //phone.setText(loggedUser.getPhone());
         if (loggedUser.getAddress() != null) {
             address.setText(loggedUser.getAddress());
         }
-        security.setText(loggedUser.getSecurity());
+        //security.setText(loggedUser.getSecurity());
         
         subscribed.setSelected(loggedUser.isSubscribed());
         success.setOpacity(0);
         hasUpdated = false;
+        if(welcome.getText().equals("Please fill up profile.") )
+        {
+            labpw.setText("Password"); 
+        }
+        quiz.getItems().addAll(
+    "What's your pet's name?",
+    "In what city were you born?",
+    "What is the name of your first school?"
+);
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -91,11 +107,12 @@ public class ProfileController extends AnchorPane {
         User loggedUser = application.getLoggedUser();
         user.setText(loggedUser.getId());
         email.setText(loggedUser.getEmail());
-        phone.setText(loggedUser.getPhone());
+        answer.setText(loggedUser.getAnswer());
+        //quiz.setText(loggedUser.getQuiz());
         if (loggedUser.getAddress() != null) {
             address.setText(loggedUser.getAddress());
         }
-        security.setText(loggedUser.getSecurity());
+        //security.setText(loggedUser.getSecurity());
         
         subscribed.setSelected(loggedUser.isSubscribed());
         animateMessage();
@@ -108,10 +125,11 @@ public class ProfileController extends AnchorPane {
         User loggedUser = application.getLoggedUser();
         //loggedUser.set
         loggedUser.setEmail(email.getText());
-        loggedUser.setPhone(phone.getText());
+        loggedUser.setAnswer(answer.getText());
+//        loggedUser.setQuiz(quiz.getText());
         loggedUser.setSubscribed(subscribed.isSelected());
         loggedUser.setAddress(address.getText());
-        loggedUser.setSecurity(security.getText());
+        //loggedUser.setSecurity(security.getText());
         animateMessage();
         hasUpdated = true;
     }

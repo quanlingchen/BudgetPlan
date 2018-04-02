@@ -94,7 +94,7 @@
         rgba(255,255,255,0));
 }
 
-.text-field, .text-area {
+.text-field, .text-area, .combo-box {
     -fx-font-size: 18;
     -fx-background-color:
         rgb(255, 255, 255, 0.3),
@@ -111,7 +111,7 @@
     -fx-padding: 6 5 6 5;
 }
 
-.text-field:focused, .text-area:focused {
+.text-field:focused, .text-area:focused , .combo-box:focused{
     -fx-background-color:
         rgb(235, 235, 235, 0.5),
         rgb(0, 0, 0, 0.4),

@@ -113,13 +113,14 @@ public class Main extends Application {
     private void gotoProfile(boolean s) {
         try {
             ProfileController profile = (ProfileController) replaceSceneContent("Profile.fxml");
-            profile.setApp(this);
+            
             this.stage.setTitle("Profile");
             if(s) {
                 this.stage.setTitle("Sign up");
                 profile.setWelcome("Please fill up profile.");
             }
-        } catch (Exception ex) {
+            profile.setApp(this);
+        } catch (Exception ex) {    
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -128,6 +129,7 @@ public class Main extends Application {
         try {
             LoginController login = (LoginController) replaceSceneContent("Login.fxml");
             login.setApp(this);
+            stage.setTitle("Budget Planner for Students");
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
