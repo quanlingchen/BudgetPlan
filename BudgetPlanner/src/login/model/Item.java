@@ -14,20 +14,20 @@ public class Item {
     private static final Map<String, Item> ITEMS = new HashMap<String, Item>();
 
     public static Item of(String id) {
-        Item user = ITEMS.get(id);
-        if (user == null) {
-            user = new Item(id);
-            ITEMS.put(id, user);
+        Item item = ITEMS.get(id);
+        if (item == null) {
+            item = new Item(id);
+            ITEMS.put(id, item);
         }
-        return user;
+        return item;
     }
     public static Item off(String id) {
-        Item user = ITEMS.get(id);
-        if (user != null) {
-            //user = new Item(id);
+        Item item = ITEMS.get(id);
+        if (item != null) {
+            //item = new Item(id);
             ITEMS.remove(id);
         }
-        return user;
+        return item;
     }
     private Item(String id) {
         this.id = id;
