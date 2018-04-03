@@ -13,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import login.model.User;
+import login.model.Item;
+import login.model.Plan;
 import login.security.Authenticator;
 
 /**
@@ -26,14 +28,17 @@ public class Main extends Application {
 
     private Stage stage;
     private User loggedUser;
+    private Item listItem;
+    private Plan listPlan;
     private final double MINIMUM_WINDOW_WIDTH = 390.0;
-    private final double MINIMUM_WINDOW_HEIGHT = 500.0;
+    private final double MINIMUM_WINDOW_HEIGHT = 550.0;
     public Map<String, Integer> countLogin = new HashMap<>();
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         Application.launch(Main.class, (java.lang.String[])null);
+        //read user from database
     }
 
     @Override
@@ -53,6 +58,15 @@ public class Main extends Application {
     public User getLoggedUser() {
         return loggedUser;
     }
+    public Item getListItem() {
+        return listItem;
+    }
+    public void setListItem(Item list) {
+        this.listItem = list;
+    }
+    public Plan getListPlan() {
+        return listPlan;
+    }
     public boolean addUser(String userId){
         if (Authenticator.getInstance().isExist(userId))
             return false;
@@ -63,6 +77,7 @@ public class Main extends Application {
         } else return false;
     } 
     
+    //login in with security answer
     public boolean userLoggingA(String userId, String answer){
         
         boolean rtn = !Authenticator.getInstance().getAnswer(userId).equals("")
@@ -72,6 +87,10 @@ public class Main extends Application {
             gotoProfile(true);
         }
         return rtn;
+    }
+    public boolean itemList(){
+        gotoItem();
+        return true;
     }
     public boolean userLogging(String userId, String password){
         System.out.println("got user id " + userId + " password " + password);
@@ -109,7 +128,14 @@ public class Main extends Application {
         loggedUser = null;
         gotoLogin();
     }
-    
+    void itemLogout(){
+        listItem = null;
+        gotoPlan();
+    }
+    void planLogout(){
+        listPlan = null;
+        gotoProfile(false);
+    }
     private void gotoProfile(boolean s) {
         try {
             ProfileController profile = (ProfileController) replaceSceneContent("Profile.fxml");
@@ -124,7 +150,26 @@ public class Main extends Application {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    private void gotoItem() {
+        try {
+            stage.setTitle("Item detail");
+            ItemDetailController item = (ItemDetailController) replaceSceneContent("ItemDetail.fxml");
+            item.setApp(this);
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void gotoPlan() {
+        try {
+            stage.setTitle("Plan detail");
+            PlanDetailController plan = (PlanDetailController) replaceSceneContent("PlanDetail.fxml");
+            plan.setApp(this);
+            //stage.setTitle("Plan detail");
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private void gotoLogin() {
         try {
             LoginController login = (LoginController) replaceSceneContent("Login.fxml");
