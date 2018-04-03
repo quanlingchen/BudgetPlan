@@ -12,7 +12,9 @@ import java.util.Map;
 public class Item {
 
     private static final Map<String, Item> ITEMS = new HashMap<String, Item>();
-
+    public int getSize(){
+        return ITEMS.size();
+    }
     public static Item of(String id) {
         Item item = ITEMS.get(id);
         if (item == null) {
@@ -41,7 +43,7 @@ public class Item {
     private String amount ="";
     private String date = "";
     private String comment = "";
-
+    private String name = "";
     /**
      * @return the date
      */
@@ -95,5 +97,18 @@ public class Item {
      */
     public void setAmount(String amount) {
         this.amount = amount;
+    }
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 }
