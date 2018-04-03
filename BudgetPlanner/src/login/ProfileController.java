@@ -86,7 +86,7 @@ public class ProfileController extends AnchorPane {
         {
             labpw.setText("Password"); 
         }else{
-            pw.setText(loggedUser.getPassword());
+            //pw.setText(loggedUser.getPassword());
         }
         
         quiz.getSelectionModel().select(loggedUser.getQuiz());
@@ -113,7 +113,6 @@ public class ProfileController extends AnchorPane {
         if(isModified()) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Profile modified");
-            //alert.setHeaderText("Look, a Confirmation Dialog");
             alert.setContentText("Looks profile had been modified. Are you sure you want to logout?");
 
             Optional<ButtonType> result = alert.showAndWait();
@@ -123,7 +122,7 @@ public class ProfileController extends AnchorPane {
         }
         if(welcome.getText().equals("Please fill up profile.") && !hasUpdated)
         {
-            //remove user
+            //remove user from catch
             System.out.println("remove user" + Authenticator.getInstance().removeUser(user.getText()));
         }
         application.userLogout();
@@ -190,10 +189,13 @@ public class ProfileController extends AnchorPane {
         loggedUser.setQuiz(quiz.getSelectionModel().getSelectedIndex());
         loggedUser.setPassword(pw.getText());
         //may not need these 2 lines when db set up
+        Authenticator.getInstance().setPassword(loggedUser.getId(),pw.getText());
         Authenticator.getInstance().setAnswer(loggedUser.getId(),answer.getText());
         Authenticator.getInstance().setQuiz(loggedUser.getId(),quiz.getSelectionModel().getSelectedIndex());
         //loggedUser.setAddress(address.getText());
-        //loggedUser.setSecurity(security.getText());
+        //loggedUser.setSecurity(pw.getText());
+        pw.setText("");
+        conpw.setText("");
         animateMessage();
         hasUpdated = true;
     }
@@ -203,8 +205,10 @@ public class ProfileController extends AnchorPane {
         User loggedUser = application.getLoggedUser();
         rtn = !answer.getText().equals(loggedUser.getAnswer()) ||
                 !email.getText().equals(loggedUser.getEmail()) ||
-                quiz.getSelectionModel().getSelectedIndex()!=loggedUser.getQuiz()||
-                !pw.getText().equals("")||!conpw.getText().equals("")
+                quiz.getSelectionModel().getSelectedIndex() != loggedUser.getQuiz()||
+                (!pw.getText().equals("")&&!pw.getText().equals(loggedUser.getPassword())) || 
+                !conpw.getText().equals("")
+                //!pw.getText().equals(loggedUser.getPassword())
                 ;
         return rtn;
     }
