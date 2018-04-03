@@ -21,7 +21,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.collections.FXCollections?>
 
-<AnchorPane id="Profile" focusTraversable="false" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" styleClass="background" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.ProfileController">
+<AnchorPane id="ItemDetail" focusTraversable="false" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" styleClass="background" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.ItemDetailController">
   <children>
     <AnchorPane id="anchorPane1" prefHeight="400.0" prefWidth="500.0" styleClass="top-segment" AnchorPane.bottomAnchor="129.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
@@ -29,52 +29,41 @@
           <children>
             <GridPane id="GridPane" hgap="15.0" vgap="15.0">
               <children>
-                <Label id="Label" fx:id="welcome" styleClass="profileTitle" text="Please review your profile." GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
+                <Label id="Label" fx:id="welcome" styleClass="itemTitle" text="" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
                   <font>
                     <Font size="20.0" fx:id="x1" />
                   </font>
                 </Label>
-                <Hyperlink fx:id="logout" onAction="#processLogout" text="logout" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                <Hyperlink fx:id="logout" onAction="#processLogout" text="Back" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
                 <Label id="Label" font="$x1" text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="1">
                   <GridPane.margin>
                     <Insets top="2.0" fx:id="x3" />
                   </GridPane.margin>
                 </Label>
-                <TextField fx:id="user" editable="false" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label fx:id="labpw" id="Label" font="$x1" text="Change password:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="2" />
-                <TextField fx:id="pw" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <Label id="Label" font="$x1" text="Confirm password:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="3" />
-                <TextField fx:id="conpw" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <Label id="Label" font="$x1" text="Email:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="4" />
-                <TextField fx:id="email" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <Label id="Label" font="$x1" text="Security Question:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="5" />
+                <TextField fx:id="name" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label id="Label" font="$x1" text="Type:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="2" />
                 <!--TextField fx:id="phone" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" /-->
-				<ComboBox  fx:id="quiz" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="340.0">                
+				<ComboBox  fx:id="type" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="340.0">                
             <!--cellValueFactory>
                     <PropertyValueFactory property="firstName" />
             </cellValueFactory-->
 				</ComboBox>
-                <Label id="Label" font="$x1" text="Security answer:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="6" />
-                <TextField fx:id="answer" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                <!--Label id="Label" font="$x1" text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.valignment="TOP">
+                <Label fx:id="labpw" id="Label" font="$x1" text="Amount:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="3" />
+                <TextField fx:id="amount" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label id="Label" font="$x1" text="Date:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="4" />
+                <TextField fx:id="date" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label id="Label" font="$x1" text="Comment:" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP">
                   <GridPane.margin>
                     <Insets top="8.0" />
                   </GridPane.margin>
                 </Label>
-                <TextArea fx:id="address" maxHeight="82.0" minHeight="39.0" minWidth="200.0" prefHeight="71.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                <CheckBox id="" fx:id="subscribed" GridPane.columnIndex="1" GridPane.rowIndex="8">
-                  <font>
-                    <Font size="16.0" fx:id="x2" />
-                  </font>
-                  <GridPane.margin>
-                    <Insets left="1.0" />
-                  </GridPane.margin>
-                </CheckBox-->
-                <Label id="Label" fx:id="errorMessage"  font="$x1" text="" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                <TextArea fx:id="comment" maxHeight="82.0" minHeight="39.0" minWidth="200.0" prefHeight="71.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                
+                <!--Label id="Label" font="$x1" text="Subscribe to Newsletter" GridPane.columnIndex="1" GridPane.rowIndex="9">
                   <GridPane.margin>
                     <Insets left="28.0" top="3.0" />
                   </GridPane.margin>
-                </Label>
+                </Label-->
                         
               </children>
               <columnConstraints>
@@ -97,14 +86,14 @@
     </AnchorPane>
     <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="102.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
       <children>
-        <Label fx:id="success" font="$x2" opacity="0.0" text="Profile  successfully updated!" />
+        <Label fx:id="success" font="$x2" opacity="0.0" text="Item successfully updated!" />
       </children>
     </HBox>
     <HBox id="HBox" alignment="CENTER" spacing="20.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
       <children>
         <Button fx:id="update" defaultButton="true" font="$x1" maxHeight="2.147483647E9" onAction="#processUpdate" prefHeight="50.0" prefWidth="130.0" text="Update" HBox.hgrow="ALWAYS" />
         <Button fx:id="reset" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processReset" opacity="0.4" prefHeight="50.0" prefWidth="130.0" text="Reset" HBox.hgrow="ALWAYS" />
-		<Button fx:id="planlist" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processPlanList" opacity="0.4" prefHeight="50.0" prefWidth="140.0" text="Plan List" HBox.hgrow="ALWAYS" />
+		<Button fx:id="cancel" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processLogout" opacity="0.4" prefHeight="50.0" prefWidth="140.0" text="Cancel" HBox.hgrow="ALWAYS" />
       </children>
     </HBox>
   </children>
