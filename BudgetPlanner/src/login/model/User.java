@@ -37,13 +37,13 @@ public class User {
     public String getId() {
         return id;
     }
-    private int question = 1;
+    private int quiz = 1;
     private String answer ="";
     private String email = "";
-    private String phone = "";
-    private boolean subscribed;
-    private String address = "";
-    private String security = "";
+    //private String phone = "";
+    //private boolean subscribed;
+    //private String address = "";
+    private String pw = "";
 
     /**
      * @return the email
@@ -60,57 +60,43 @@ public class User {
     }
 
     /**
-     * @return the phone
+     * @return the quiz
      */
-    public String getPhone() {
-        return phone;
+    public int getQuiz() {
+        return quiz;
     }
 
     /**
-     * @param phone the phone to set
+     * @param quiz the phone to set
      */
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setQuiz(int quiz) {
+        this.quiz = quiz;
     }
 
     /**
-     * @return the subscribed
+     * @return the password
      */
-    public boolean isSubscribed() {
-        return subscribed;
+    public String getPassword() {
+        return pw;
     }
 
     /**
-     * @param subscribed the subscribed to set
+     * @param password the password to set
      */
-    public void setSubscribed(boolean subscribed) {
-        this.subscribed = subscribed;
+    public void setPassword(String pw) {
+        this.pw = pw;
+    }
+    /**
+     * @return the answer
+     */
+    public String getAnswer() {
+        return answer;
     }
 
     /**
-     * @return the security
+     * @param answer the answer to set
      */
-    public String getSecurity() {
-        return security;
-    }
-
-    /**
-     * @param security the security to set
-     */
-    public void setSecurity(String security) {
-        this.security = security;
-    }
-    /**
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }
