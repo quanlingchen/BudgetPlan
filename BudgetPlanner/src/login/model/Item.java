@@ -1,5 +1,6 @@
 package login.model;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -41,20 +42,20 @@ public class Item {
     }
     private int type = 1;
     private String amount ="";
-    private String date = "";
+    private Date date = null;
     private String comment = "";
     private String name = "";
     /**
      * @return the date
      */
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
     /**
      * @param date the date to set
      */
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
