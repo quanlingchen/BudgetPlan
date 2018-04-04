@@ -67,6 +67,9 @@ public class Main extends Application {
     public Plan getListPlan() {
         return listPlan;
     }
+    public void setListPlan(Plan list) {
+        this.listPlan = list;
+    }
     public boolean addUser(String userId){
         if (Authenticator.getInstance().isExist(userId))
             return false;
@@ -153,7 +156,7 @@ public class Main extends Application {
     
     private void gotoItem() {
         try {
-            stage.setTitle("Item detail");
+            stage.setTitle(getLoggedUser().getId()+"'s Item detail");
             ItemDetailController item = (ItemDetailController) replaceSceneContent("ItemDetail.fxml");
             item.setApp(this);
         } catch (Exception ex) {
@@ -162,7 +165,7 @@ public class Main extends Application {
     }
     private void gotoPlan() {
         try {
-            stage.setTitle("Plan detail");
+            stage.setTitle(getLoggedUser().getId()+"'s Plan detail");
             PlanDetailController plan = (PlanDetailController) replaceSceneContent("PlanDetail.fxml");
             plan.setApp(this);
             //stage.setTitle("Plan detail");

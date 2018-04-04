@@ -52,8 +52,8 @@ public class ProfileController extends AnchorPane {
     private Label welcome;
     @FXML 
     private Label labpw;
-    @FXML 
-    private Label errorMessage;
+    //@FXML 
+    //private Label errorMessage;
     
     private Main application;
     private boolean hasUpdated;
@@ -103,7 +103,12 @@ public class ProfileController extends AnchorPane {
         if (application == null){
             return;
         }
-        application.itemLogout();//gotoplan
+        if(isModified()){
+            success.setText("Profile had been Modified! Please Update first.");
+            animateMessage();
+        }else{
+            application.itemLogout();//gotoplan
+        }
     }
     public void processLogout(ActionEvent event) {
         
@@ -132,7 +137,7 @@ public class ProfileController extends AnchorPane {
             animateMessage();
             return;
         }
-        errorMessage.setText("");
+        success.setText("");
         User loggedUser = application.getLoggedUser();
         user.setText(loggedUser.getId());
         email.setText(loggedUser.getEmail());
@@ -146,36 +151,41 @@ public class ProfileController extends AnchorPane {
         //animateMessage();
     }
     public void processUpdate(ActionEvent event) {
-        errorMessage.setText("");
+        success.setText("");
         if (application == null){
             animateMessage();
             return;
         }
         if(answer.getText().equals("")){
-            errorMessage.setText("Please input answer.");
+            success.setText("Please input answer.");
+            animateMessage();
             return;
         }
         //validation
         if(welcome.getText().equals("Please fill up profile.")){
             // must input password
             if(pw.getText().equals("")){
-                errorMessage.setText("Please input password.");
+                success.setText("Please input password.");
+                animateMessage();
                 return;
             }
             if(conpw.getText().equals("")){
-                errorMessage.setText("Please input password.");
+                success.setText("Please input password.");
+                animateMessage();
                 return;
             }
             // password doesn't match
             if(!pw.getText().equals(conpw.getText())){
-                errorMessage.setText("Password is not match.");
+                success.setText("Password is not match.");
+                animateMessage();
                 return;
             }
         } else{
             // password doesn't match
             if(!pw.getText().equals(conpw.getText())){
                 if(!pw.getText().equals("") ||!conpw.getText().equals("") ){
-                    errorMessage.setText("Password is not match.");
+                    success.setText("Password is not match.");
+                    animateMessage();
                     return;
                 }
             }
@@ -196,6 +206,7 @@ public class ProfileController extends AnchorPane {
         //loggedUser.setSecurity(pw.getText());
         pw.setText("");
         conpw.setText("");
+        success.setText("Profile  successfully updated!");
         animateMessage();
         hasUpdated = true;
     }

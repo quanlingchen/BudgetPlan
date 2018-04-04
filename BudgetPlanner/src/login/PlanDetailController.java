@@ -28,17 +28,11 @@ public class PlanDetailController extends AnchorPane {
     @FXML
     private TextField name;
     @FXML
-    private ComboBox type;//TextField phone;
-    @FXML
-    private TextField answer;
-    @FXML
-    private TextField email;
-    @FXML
-    private TextField pw;
+    private ComboBox type;
+   
     @FXML
     private TextArea comment;
-    @FXML
-    private CheckBox subscribed;
+    
     @FXML
     private Hyperlink back;
     @FXML 
@@ -49,18 +43,32 @@ public class PlanDetailController extends AnchorPane {
     private Label success;
     @FXML 
     private Label welcome;
-    @FXML 
-    private Label labpw;
+    
     
     private Main application;
     private boolean hasUpdated;
     public void setApp(Main application){
         System.out.println("in plan detail controller");
+        type.getItems().addAll(
+            "Weekly",
+            "Biweekly",
+            "monthly",
+            "annually"
+        );
         this.application = application;
         System.out.println("1");
         Plan listedPlan = application.getListPlan();
+        if(listedPlan == null) {
+            listedPlan = listedPlan.of("1");
+            application.setListPlan(listedPlan);
+        }else{
+            listedPlan = listedPlan.of( Integer.toString(listedPlan.getSize()+1));
+        }
         System.out.println("2" + listedPlan);
-        name.setText(listedPlan.getId());System.out.println("3");
+        name.setText(listedPlan.getName());
+        type.getSelectionModel().select(listedPlan.getType());
+        System.out.println("3");
+        welcome.setText(listedPlan.getId());
         //email.setText(listedPlan.getEmail());System.out.println("4");
         //answer.setText(listedPlan.getAnswer());System.out.println("5");
         
@@ -79,11 +87,7 @@ public class PlanDetailController extends AnchorPane {
         }else{
             pw.setText(listedPlan.getPassword());
         }*/
-        type.getItems().addAll(
-    "What's your pet's name?",
-    "In what city were you born?",
-    "What is the name of your first school?"
-);
+        
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -108,10 +112,11 @@ public class PlanDetailController extends AnchorPane {
             return;
         }
         Plan listedPlan = application.getListPlan();
-        name.setText(listedPlan.getId());
+        name.setText(listedPlan.getName());
         //email.setText(listedPlan.getEmail());
         //answer.setText(listedPlan.getAnswer());
         //type.setText(listedPlan.getQuiz());
+        type.getSelectionModel().select(listedPlan.getType());
         if (listedPlan.getComment() != null) {
             comment.setText(listedPlan.getComment());
         }
@@ -127,11 +132,12 @@ public class PlanDetailController extends AnchorPane {
         }
         Plan listedPlan = application.getListPlan();
         //listedPlan.set
-        //listedPlan.setEmail(email.getText());
+        listedPlan.setName(name.getText());
         //listedPlan.setAnswer(answer.getText());
 //        listedPlan.setQuiz(type.getText());
         //listedPlan.setSubscribed(subscribed.isSelected());
         listedPlan.setComment(comment.getText());
+        listedPlan.setType(type.getSelectionModel().getSelectedIndex());
         //listedPlan.setSecurity(security.getText());
         animateMessage();
         hasUpdated = true;

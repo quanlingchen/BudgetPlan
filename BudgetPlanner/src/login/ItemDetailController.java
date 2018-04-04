@@ -10,6 +10,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import login.model.Item; 
+import java.util.Date; 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.Instant;
+//import javax.swing.JDialog;
+//import javax.swing.JOptionPane;
+//import org.jdesktop.swingx.JXDatePicker;
+
 
 /**
  * Profile Controller.
@@ -31,7 +39,7 @@ public class ItemDetailController extends AnchorPane {
     @FXML
     private TextField amount;
     @FXML
-    private TextField date;
+    private DatePicker date;
     //@FXML
   //  private TextField pw;
     @FXML
@@ -69,7 +77,8 @@ public class ItemDetailController extends AnchorPane {
             listedItem = listedItem.of( Integer.toString(listedItem.getSize()+1));
         }
         name.setText(listedItem.getName());
-        date.setText(listedItem.getDate());
+        if(listedItem.getDate()!=null)
+            date.setValue(listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         amount.setText(listedItem.getAmount());
         type.getSelectionModel().select(listedItem.getType());
         welcome.setText(listedItem.getId());
@@ -112,7 +121,14 @@ public class ItemDetailController extends AnchorPane {
         Item listedItem = application.getListItem();
         
         name.setText(listedItem.getName());
-        date.setText(listedItem.getDate());
+  //      Date input = new Date();
+//Instant instant = input.toInstant();
+//ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
+//LocalDate date = zdt.toLocalDate();
+    if(listedItem.getDate()!=null)
+        date.setValue( listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        
+        );
         amount.setText(listedItem.getAmount());
         type.getSelectionModel().select(listedItem.getType());
         if (listedItem.getComment() != null) {
@@ -131,7 +147,11 @@ public class ItemDetailController extends AnchorPane {
         Item listedItem = application.getListItem();
         //listedItem.set
         listedItem.setName(name.getText());
-        listedItem.setDate(date.getText());
+        
+        LocalDate localDate = date.getValue();
+        Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+
+        listedItem.setDate(Date.from(instant));
         listedItem.setAmount(amount.getText());
         listedItem.setType(type.getSelectionModel().getSelectedIndex());
         //listedItem.setSubscribed(subscribed.isSelected());
@@ -154,4 +174,13 @@ public class ItemDetailController extends AnchorPane {
         boolean rtn = false;
         return rtn;
     }
+    //amount.textProperty().addListener(new ChangeListener<String>() {
+      //      
+    //@Override
+            public void onChanged(ActionEvent event) {
+                //if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+                  //  vehiclePrice_TextField.setText(oldValue);
+                //}
+            }
+        //});
 }
