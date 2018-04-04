@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
+<!--javafx.scene.control.DatePicker
 -->
 
 <?import java.net.URL?>
@@ -11,6 +11,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -51,7 +52,7 @@
                 <Label fx:id="labpw" id="Label" font="$x1" text="Amount:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="3" />
                 <TextField fx:id="amount" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 <Label id="Label" font="$x1" text="Date:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="4" />
-                <TextField fx:id="date" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <DatePicker fx:id="date" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                 <Label id="Label" font="$x1" text="Comment:" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP">
                   <GridPane.margin>
                     <Insets top="8.0" />
