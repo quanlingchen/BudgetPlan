@@ -40,6 +40,8 @@ public class Item {
     public String getId() {
         return id;
     }
+    private String userId = "";
+    private String planId = "";
     private int type = 1;
     private String amount ="";
     private Date date = null;
@@ -85,6 +87,32 @@ public class Item {
      */
     public void setComment(String comment) {
         this.comment = comment;
+    }
+    /**
+     * @return the userId
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    /**
+     * @return the planId
+     */
+    public String getPlanId() {
+        return planId;
+    }
+
+    /**
+     * @param planId the planId to set
+     */
+    public void setPlanId(String planId) {
+        this.planId = planId;
     }
     /**
      * @return the amount

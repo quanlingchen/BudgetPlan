@@ -40,7 +40,21 @@ public class Plan {
     private int type = 1;
     private String name ="";
     private String comment = "";
+    private String userId = "";
 
+    /**
+     * @return the userId
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     /**
      * @return the type
      */
