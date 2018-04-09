@@ -43,7 +43,7 @@ public class Item {
     private String userId = "";
     private String planId = "";
     private int type = 1;
-    private String amount ="";
+    private double amount =0;
     private Date date = null;
     private String comment = "";
     private String name = "";
@@ -117,14 +117,14 @@ public class Item {
     /**
      * @return the amount
      */
-    public String getAmount() {
+    public double getAmount() {
         return amount;
     }
 
     /**
      * @param amount the amount to set
      */
-    public void setAmount(String amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
     /**
@@ -139,5 +139,13 @@ public class Item {
      */
     public void setName(String name) {
         this.name = name;
+    }
+public void setItem(String id, String name,int type,double Amount,Date date,String comment) {
+        this.id = id ;
+        this.name = name ;
+        this.date=date;
+        this.amount=amount;
+        this.type = type ;
+        this.comment = comment ;
     }
 }

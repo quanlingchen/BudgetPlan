@@ -17,7 +17,11 @@ public class Plan {
         Plan plan = PLANS.get(id);
         if (plan == null) {
             plan = new Plan(id);
-            PLANS.put(id, plan);
+            //PLANS.put(id, plan);
+            
+            //Plan p=Plan.of(id);
+        plan.setPlan(id,"new plan",1,"");
+        PLANS.put(id, plan);
         }
         return plan;
     }
@@ -28,6 +32,10 @@ public class Plan {
             PLANS.remove(id);
         }
         return plan;
+    }
+    public static boolean has(String id) {
+        
+        return PLANS.containsKey(id);
     }
     private Plan(String id) {
         this.id = id;
@@ -48,7 +56,12 @@ public class Plan {
     public String getUserId() {
         return userId;
     }
-
+public void setPlan(String id, String name,int type,String comment) {
+        this.id = id ;
+        this.name = name ;
+        this.type = type ;
+        this.comment = comment ;
+    }
     /**
      * @param userId the userId to set
      */
