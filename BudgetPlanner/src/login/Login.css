@@ -78,9 +78,9 @@
     -fx-background-insets: -3 -3 -4 -3, -3, 0, 1, 2, 0;
     -fx-font-family: "Arial";
     -fx-text-fill: white;
-    -fx-font-size: 26;
+    -fx-font-size: 20;
     -fx-text-fill: linear-gradient(white, #d0d0d0);
-    -fx-padding: 10 20 10 20;
+    -fx-padding: 5 15 5 15;
 }
 
 .button:focused, .button:hover {
