@@ -60,10 +60,10 @@ public class Itemmer {
       // Exists only to defeat instantiation.
       Date date=new Date();
       Item p = Item.of("1");
-        p.setItem("1","abc",1,35, date,"taoyan");
+        p.setItem("1","aaa",1,35, date,"taoyan");
       ITEMS.put("1", p);
       Item p1=Item.of("2");
-        p1.setItem("2","bbc",0,44, date,"regular");
+        p1.setItem("2","ccc",0,44, date,"regular");
       ITEMS.put("2", p1);
 
    }
