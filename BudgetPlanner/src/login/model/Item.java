@@ -20,6 +20,7 @@ public class Item {
         Item item = ITEMS.get(id);
         if (item == null) {
             item = new Item(id);
+            item.setItem(id,"new item",1,0,new Date(),"");
             ITEMS.put(id, item);
         }
         return item;
@@ -59,6 +60,10 @@ public class Item {
      */
     public void setDate(Date date) {
         this.date = date;
+    }
+    public static boolean has(String id) {
+        
+        return ITEMS.containsKey(id);
     }
 
     /**
