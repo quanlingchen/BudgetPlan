@@ -72,7 +72,7 @@ public class LoginController extends AnchorPane {
                     answer.setVisible(false);
                 }else if(event.getSource().toString().endsWith("'Forgot password'")){
                     //display secure question and answer input box
-                    errorMessage.setText("Security question: " + Authenticator.getInstance().getQuiz(userId.getText()));
+                    errorMessage.setText("Security question: " + Authenticator.getInstance().getQuizs (Authenticator.getInstance().getQuiz(userId.getText())));
                     answer.setVisible(true);
                 }else if(event.getSource().toString().endsWith("'Login'")){
                     if (application.countLogin.containsKey(userId.getText())&& (application.countLogin.get(userId.getText())>=3)){

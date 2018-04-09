@@ -1,6 +1,8 @@
 package login;
 
 import java.net.URL;
+import java.util.*;
+import java.util.List;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.animation.FadeTransition;
@@ -9,11 +11,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import login.model.User;
+import login.model.PlanList;
 import login.security.Authenticator;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
+import login.model.Plan;
+import login.security.DBManager;
+import login.security.Planner;
 /**
  * Profile Controller.
  * 
@@ -47,11 +55,20 @@ public class ProfileController extends AnchorPane {
     @FXML 
     private Button reset;
     @FXML 
+    private Label id;
+    @FXML 
     private Label success;
     @FXML 
     private Label welcome;
     @FXML 
     private Label labpw;
+    @FXML 
+    private TableView<PlanList> tableView;
+    @FXML private TableColumn<PlanList,String> planId;
+    @FXML private TableColumn<PlanList,String> planName;
+    @FXML private TableColumn<PlanList,String> planType;
+    @FXML private TableColumn<PlanList,String> planComment;
+private ObservableList<PlanList> list;
     //@FXML 
     //private Label errorMessage;
     
@@ -59,6 +76,7 @@ public class ProfileController extends AnchorPane {
     private boolean hasUpdated;
     public void setApp(Main application){
         System.out.println("in profile controller");
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         quiz.getItems().addAll(
     "What's your pet's name?",
     "In what city were you born?",
@@ -90,16 +108,40 @@ public class ProfileController extends AnchorPane {
         }
         
         quiz.getSelectionModel().select(loggedUser.getQuiz());
-        //
-       //quiz.getSelectionModel().select( Authenticator.getInstance().getQuiz(loggedUser.getId()));
-       //answer.setText(Authenticator.getInstance().getAnswer(loggedUser.getId()));
+        //List<String> row = new ArrayList<String>();
+        
+        
+        
+       
+        //read from database
+        Plan pl=application.getListPlan();
+        Map<String, Plan> p=Planner.getInstance().getAll();
+        list = FXCollections.observableArrayList();
+        //pl.getSize();
+        if(p!=null && p.size()>0){
+            System.out.println(" plans size: " + p.size());
+            for (Map.Entry<String, Plan> entry : p.entrySet()) {
+		System.out.println("Item : " + entry.getKey() + " Count : " + entry.getValue());
+                pl=entry.getValue();
+                list.add(new PlanList(pl.getId(),pl.getName(),Integer.toString(pl.getType()),pl.getComment()));
+            }
+        } else{
+            System.out.println(" plans: " + application.getListPlan());
+        }
+       
+        tableView.setItems(list);
+        planId.setCellValueFactory(cellData -> cellData.getValue().idProperty());
+        planName.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        planType.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
+        planComment.setCellValueFactory(cellData -> cellData.getValue().commentProperty());
         
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
     }
-    public void processPlanList(ActionEvent event) {
+    
+    public void processDelPlan(ActionEvent event) {
         if (application == null){
             return;
         }
@@ -107,7 +149,64 @@ public class ProfileController extends AnchorPane {
             success.setText("Profile had been Modified! Please Update first.");
             animateMessage();
         }else{
-            application.itemLogout();//gotoplan
+            
+            if (tableView.getFocusModel().getFocusedIndex()<0)
+            {
+                success.setText("Please select a plan on the list.");
+                animateMessage();
+                return;
+            }
+            System.out.println("table view index:"+tableView.getFocusModel().getFocusedIndex());
+             Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Delete Plan: " +tableView.getItems().get(tableView.getFocusModel().getFocusedIndex()).id.getValue());
+            alert.setContentText("Are you sure delete plan?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.CANCEL){
+                return;// ... user chose CANCEL or closed the dialog
+            }
+            Planner.getInstance().removePlan(Integer.toString(tableView.getFocusModel().getFocusedIndex()));
+            //Plan.off(Integer.toString(tableView.getFocusModel().getFocusedIndex()));
+            list=tableView.getItems();
+            list.remove(tableView.getFocusModel().getFocusedIndex());
+            tableView.setItems(list);
+            //tableView.getFocusModel().
+            //application.setListPlan(Plan.of( tableView.getFocusModel().getFocusedItem().id.getValue() ));
+            //application.itemList(tableView.getFocusModel().getFocusedIndex(),tableView.getFocusModel().getFocusedItem().id.getValue());//gotoplan
+        }
+    }
+    public void processEditPlan(ActionEvent event) {
+        if (application == null){
+            return;
+        }
+        if(isModified()){
+            success.setText("Profile had been Modified! Please Update first.");
+            animateMessage();
+        }else{
+            
+            if (tableView.getFocusModel().getFocusedIndex()<0)
+            {
+                success.setText("Please select a plan on the list.");
+                animateMessage();
+                return;
+            }
+            System.out.println("table view index:"+tableView.getFocusModel().getFocusedIndex());
+            //application.setListPlan(Plan.of( tableView.getFocusModel().getFocusedItem().id.getValue() ));
+            application.itemList(tableView.getFocusModel().getFocusedIndex(),
+                    tableView.getFocusModel().getFocusedItem().id.getValue());//gotoplan
+        }
+    }
+    public void processAddPlan(ActionEvent event) {
+        if (application == null){
+            return;
+        }
+        if(isModified()){
+            success.setText("Profile had been Modified! Please Update first.");
+            animateMessage();
+        }else{
+            
+            System.out.println("table view index:"+tableView.getFocusModel().getFocusedIndex());
+            application.itemList(-1,"");//Integer.toString( application.getListPlan().getSize()+1)
         }
     }
     public void processLogout(ActionEvent event) {
@@ -206,6 +305,11 @@ public class ProfileController extends AnchorPane {
         //loggedUser.setSecurity(pw.getText());
         pw.setText("");
         conpw.setText("");
+         DBManager d= new DBManager();
+         if(welcome.getText().equals("Please fill up profile."))
+            d.createUser(loggedUser);
+         else
+            d.updateUser(loggedUser);
         success.setText("Profile  successfully updated!");
         animateMessage();
         hasUpdated = true;

@@ -14,6 +14,8 @@ import java.util.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.Instant;
+import javafx.scene.control.Hyperlink;
+import login.security.Itemmer;
 //import javax.swing.JDialog;
 //import javax.swing.JOptionPane;
 //import org.jdesktop.swingx.JXDatePicker;
@@ -61,25 +63,31 @@ public class ItemDetailController extends AnchorPane {
     
     private Main application;
     private boolean hasUpdated;
+    private String planId;
+    private boolean isNew;
     public void setApp(Main application){
         System.out.println("in item detail controller");
+        isNew = success.getText().equals("new");
         type.getItems().addAll(
             "Income",
             "Spends",
             "Saving"
         );
+        planId = logout.getText();
+        logout.setText("Back");
         this.application = application;
+        
         Item listedItem = application.getListItem();
         if(listedItem == null) {
             listedItem = listedItem.of("1");
             application.setListItem(listedItem);
         }else{
-            listedItem = listedItem.of( Integer.toString(listedItem.getSize()+1));
+            //listedItem = listedItem.of( Integer.toString(listedItem.getSize()+1));
         }
         name.setText(listedItem.getName());
         if(listedItem.getDate()!=null)
             date.setValue(listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        amount.setText(listedItem.getAmount());
+        amount.setText(Double.toString(listedItem.getAmount()));
         type.getSelectionModel().select(listedItem.getType());
         welcome.setText(listedItem.getId());
         
@@ -106,12 +114,20 @@ public class ItemDetailController extends AnchorPane {
         if (application == null){
             return;
         }
-        if(welcome.getText().equals("Please fill up profile.") && !hasUpdated)
+        System.out.println("b4 reset will remove item" );
+        processReset( event);
+       
+        System.out.println("will remove item" );
+        if(isNew )
         {
-            //remove item
-            //System.out.println("remove item" + application.getListItem().remove(name.getText()));
-        }
-        application.itemLogout();
+            System.out.println("in remove item" );
+            //remove plan
+            if (!hasUpdated)System.out.println("remove item" + Itemmer.getInstance().removeItem(welcome.getText()));
+            
+        }else System.out.println("fail remove item" );
+        
+        
+        application.itemLogout(planId);//need to fix it later
     }
     public void processReset(ActionEvent event) {
         if (application == null){
@@ -129,7 +145,7 @@ public class ItemDetailController extends AnchorPane {
         date.setValue( listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         
         );
-        amount.setText(listedItem.getAmount());
+        amount.setText(Double.toString(listedItem.getAmount()));
         type.getSelectionModel().select(listedItem.getType());
         if (listedItem.getComment() != null) {
             comment.setText(listedItem.getComment());
@@ -152,7 +168,7 @@ public class ItemDetailController extends AnchorPane {
         Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
 
         listedItem.setDate(Date.from(instant));
-        listedItem.setAmount(amount.getText());
+        listedItem.setAmount(Double.parseDouble(amount.getText()));
         listedItem.setType(type.getSelectionModel().getSelectedIndex());
         //listedItem.setSubscribed(subscribed.isSelected());
         listedItem.setComment(comment.getText());
@@ -170,17 +186,28 @@ public class ItemDetailController extends AnchorPane {
     public void setWelcome(String value){
         welcome.setText(value);
     }
-    private boolean checkChange(){
-        boolean rtn = false;
-        return rtn;
-    }
+    
     //amount.textProperty().addListener(new ChangeListener<String>() {
       //      
-    //@Override
-            public void onChanged(ActionEvent event) {
-                //if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
-                  //  vehiclePrice_TextField.setText(oldValue);
-                //}
-            }
-        //});
+    private boolean isModified(){
+        boolean rtn = false;
+        Item listedItem = application.getListItem();
+        rtn=         !listedItem.getName().equals(name.getText())||
+        //listedPlan.setAnswer(answer.getText());
+//        listedPlan.setQuiz(type.getText());
+        //listedPlan.setSubscribed(subscribed.isSelected());
+        !listedItem.getComment().equals(comment.getText())||
+        listedItem.getType()!=type.getSelectionModel().getSelectedIndex()||
+        listedItem.getAmount()!= Double.parseDouble(amount.getText());
+        System.out.println("modified: " +rtn);
+        return rtn;
+    }
+
+    void setSuccess(String s){
+        success.setText(s);
+    }
+    void setPlanId(String s){
+        logout.setText(s);
+    }
+
 }
