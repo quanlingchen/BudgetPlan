@@ -62,13 +62,16 @@
                 <TextField fx:id="answer" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 				<TableView fx:id="tableView"  GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2" GridPane.rowSpan="4" >
 					 <columns>
-						  <TableColumn text="Plan Id">
+						  <TableColumn fx:id="planId" text="Plan Id">
+						  <!--cellValueFactory>
+							<PropertyValueFactory property="login.model.PlanList.id" />
+						  </cellValueFactory-->
 						  </TableColumn>
-						  <TableColumn text="Name">
+						  <TableColumn fx:id="planName" text="Name">
 						  </TableColumn>
-						  <TableColumn text="Type">
+						  <TableColumn fx:id="planType" text="Type">
 						  </TableColumn>
-						  <TableColumn text="Comment">
+						  <TableColumn fx:id="planComment" text="Comment">
 						  </TableColumn>
 					 </columns>    
 				</TableView>
