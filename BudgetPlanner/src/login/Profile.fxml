@@ -119,7 +119,9 @@
       <children>
         <Button fx:id="update" defaultButton="true" font="$x1" maxHeight="2.147483647E9" onAction="#processUpdate" prefHeight="50.0" prefWidth="130.0" text="Update" HBox.hgrow="ALWAYS" />
         <Button fx:id="reset" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processReset" prefHeight="50.0" prefWidth="130.0" text="Reset" HBox.hgrow="ALWAYS" />
-		<Button fx:id="planlist" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processPlanList" prefHeight="50.0" prefWidth="140.0" text="Edit Plan" HBox.hgrow="ALWAYS" />
+		<Button fx:id="editPlan" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processEditPlan" prefHeight="50.0" prefWidth="140.0" text="Edit Plan" HBox.hgrow="ALWAYS" />
+		<Button fx:id="addPlan" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processAddPlan" prefHeight="50.0" prefWidth="140.0" text="Add Plan" HBox.hgrow="ALWAYS" />
+		<Button fx:id="delPlan" id="Button" font="$x1" maxHeight="2.147483647E9" onAction="#processDelPlan" prefHeight="50.0" prefWidth="140.0" text="Delete Plan" HBox.hgrow="ALWAYS" />
       </children>
     </HBox>
   </children>
