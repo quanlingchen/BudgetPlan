@@ -1,6 +1,7 @@
 package login;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.animation.FadeTransition;
@@ -14,8 +15,10 @@ import java.util.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.Instant;
+import java.util.Map;
 import javafx.scene.control.Hyperlink;
 import login.security.Itemmer;
+import login.security.DBManager;
 //import javax.swing.JDialog;
 //import javax.swing.JOptionPane;
 //import org.jdesktop.swingx.JXDatePicker;
@@ -65,35 +68,47 @@ public class ItemDetailController extends AnchorPane {
     private boolean hasUpdated;
     private String planId;
     private boolean isNew;
-    public void setApp(Main application){
+    public void setApp(Main application)throws Exception{
         System.out.println("in item detail controller");
         isNew = success.getText().equals("new");
-        type.getItems().addAll(
+       // Quizs = new HashMap();//Map.Entry<String, Plan> entry :
+       DBManager d = new DBManager();
+             for (Map.Entry<Integer,String> q : d.getQuizs(3).entrySet()) {
+                 type.getItems().add(q.getValue());
+             }
+        /*type.getItems().addAll(
             "Income",
             "Spends",
             "Saving"
-        );
+        );*/
+        System.out.println("item setApp");
         planId = logout.getText();
         logout.setText("Back");
         this.application = application;
         
         Item listedItem = application.getListItem();
         if(listedItem == null) {
+            System.out.println("item is null");
             listedItem = listedItem.of("1");
             application.setListItem(listedItem);
         }else{
+            System.out.println("listedItem is not null");
             //listedItem = listedItem.of( Integer.toString(listedItem.getSize()+1));
         }
         name.setText(listedItem.getName());
-        if(listedItem.getDate()!=null)
-            date.setValue(listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         amount.setText(Double.toString(listedItem.getAmount()));
         type.getSelectionModel().select(listedItem.getType());
         welcome.setText(listedItem.getId());
-        
         if (listedItem.getComment() != null) {
             comment.setText(listedItem.getComment());
         }
+        if(listedItem.getDate()!=null){
+            System.out.println("try to set date");
+            //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+            date.setValue(listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            System.out.println("try to set date success");
+        }
+        
         
         success.setOpacity(0);
         hasUpdated = false;
@@ -120,11 +135,15 @@ public class ItemDetailController extends AnchorPane {
         System.out.println("will remove item" );
         if(isNew )
         {
-            System.out.println("in remove item" );
+            System.out.println("in remove item, new process canceled" );
             //remove plan
-            if (!hasUpdated)System.out.println("remove item" + Itemmer.getInstance().removeItem(welcome.getText()));
+            if (!hasUpdated){
+                System.out.println("remove item" + Itemmer.getInstance().removeItem(welcome.getText()));
+            }
             
-        }else System.out.println("fail remove item" );
+        }else {
+            System.out.println("should not remove item it is not new" );
+        }
         
         
         application.itemLogout(planId);//need to fix it later
@@ -166,13 +185,21 @@ public class ItemDetailController extends AnchorPane {
         
         LocalDate localDate = date.getValue();
         Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
-
+ 
         listedItem.setDate(Date.from(instant));
         listedItem.setAmount(Double.parseDouble(amount.getText()));
         listedItem.setType(type.getSelectionModel().getSelectedIndex());
         //listedItem.setSubscribed(subscribed.isSelected());
         listedItem.setComment(comment.getText());
-        //listedItem.setSecurity(security.getText());
+        listedItem.setPlanId(planId);
+        listedItem.setUserId(application.getLoggedUser().getId());
+        //update into database
+        DBManager d = new DBManager();
+        if (isNew)
+            d.createItem(listedItem);
+        else{
+            d.updateItem(listedItem);
+        }
         animateMessage();
         hasUpdated = true;
     }

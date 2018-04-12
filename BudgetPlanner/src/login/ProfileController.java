@@ -73,15 +73,20 @@ private ObservableList<PlanList> list;
     //private Label errorMessage;
     
     private Main application;
+   // private User loggedUser ;
     private boolean hasUpdated;
     public void setApp(Main application){
         System.out.println("in profile controller");
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        quiz.getItems().addAll(
+        /*quiz.getItems().addAll(
     "What's your pet's name?",
     "In what city were you born?",
     "What is the name of your first school?"
-);
+);*/
+         DBManager d = new DBManager();
+             for (Map.Entry<Integer,String> q : d.getQuizs(1).entrySet()) {
+                 quiz.getItems().add(q.getValue());
+             }
         this.application = application;
         System.out.println("1");
         User loggedUser = application.getLoggedUser();
@@ -112,10 +117,17 @@ private ObservableList<PlanList> list;
         
         
         
-       
+       System.out.println("reading db");
         //read from database
-        Plan pl=application.getListPlan();
-        Map<String, Plan> p=Planner.getInstance().getAll();
+        
+        Plan pl = application.getListPlan();
+        Map<String, Plan> p = new HashMap();//Planner.getInstance().getAll();
+        for (Plan temp : d.getPlan(loggedUser.getId())) {
+            p.put(temp.getId(), temp);
+                /*Plan.of(temp.getId()).setPlan(temp.getId(), temp.getName(), temp.getType(), temp.getComment());
+                Planner.getInstance().addPlan(temp.getId());
+                Planner.getInstance().setPlan(temp.getId(),temp);*/
+            }
         list = FXCollections.observableArrayList();
         //pl.getSize();
         if(p!=null && p.size()>0){
@@ -127,6 +139,7 @@ private ObservableList<PlanList> list;
             }
         } else{
             System.out.println(" plans: " + application.getListPlan());
+           
         }
        
         tableView.setItems(list);
@@ -158,21 +171,23 @@ private ObservableList<PlanList> list;
             }
             System.out.println("table view index:"+tableView.getFocusModel().getFocusedIndex());
              Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Delete Plan: " +tableView.getItems().get(tableView.getFocusModel().getFocusedIndex()).id.getValue());
+            alert.setTitle("Delete Plan: " + tableView.getItems().get(tableView.getFocusModel().getFocusedIndex()).id.getValue());
             alert.setContentText("Are you sure delete plan?");
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.CANCEL){
                 return;// ... user chose CANCEL or closed the dialog
             }
+            Plan p=Plan.of(Integer.toString(tableView.getFocusModel().getFocusedIndex()));
+            p.setUserId(application.getLoggedUser().getId());
             Planner.getInstance().removePlan(Integer.toString(tableView.getFocusModel().getFocusedIndex()));
-            //Plan.off(Integer.toString(tableView.getFocusModel().getFocusedIndex()));
+            DBManager d = new DBManager();
+            //delete plan from database
+            d.delPlan(p);
             list=tableView.getItems();
             list.remove(tableView.getFocusModel().getFocusedIndex());
             tableView.setItems(list);
-            //tableView.getFocusModel().
-            //application.setListPlan(Plan.of( tableView.getFocusModel().getFocusedItem().id.getValue() ));
-            //application.itemList(tableView.getFocusModel().getFocusedIndex(),tableView.getFocusModel().getFocusedItem().id.getValue());//gotoplan
+            
         }
     }
     public void processEditPlan(ActionEvent event) {
@@ -193,19 +208,21 @@ private ObservableList<PlanList> list;
             System.out.println("table view index:"+tableView.getFocusModel().getFocusedIndex());
             //application.setListPlan(Plan.of( tableView.getFocusModel().getFocusedItem().id.getValue() ));
             application.itemList(tableView.getFocusModel().getFocusedIndex(),
-                    tableView.getFocusModel().getFocusedItem().id.getValue());//gotoplan
+            tableView.getFocusModel().getFocusedItem().id.getValue());//gotoplan
         }
     }
     public void processAddPlan(ActionEvent event) {
+        System.out.println("processAddPlan");
         if (application == null){
             return;
         }
+        System.out.println("processAddPlan 1");
         if(isModified()){
             success.setText("Profile had been Modified! Please Update first.");
             animateMessage();
         }else{
-            
-            System.out.println("table view index:"+tableView.getFocusModel().getFocusedIndex());
+            System.out.println("processAddPlan 2");
+            //System.out.println("table view index:" + tableView.getFocusModel().getFocusedIndex());
             application.itemList(-1,"");//Integer.toString( application.getListPlan().getSize()+1)
         }
     }
@@ -237,7 +254,7 @@ private ObservableList<PlanList> list;
             return;
         }
         success.setText("");
-        User loggedUser = application.getLoggedUser();
+        User loggedUser = this.application.getLoggedUser();
         user.setText(loggedUser.getId());
         email.setText(loggedUser.getEmail());
         answer.setText(loggedUser.getAnswer());
@@ -316,15 +333,18 @@ private ObservableList<PlanList> list;
     }
     
     private boolean isModified() {
+        System.out.println("isModified in");
         boolean rtn = false;
         User loggedUser = application.getLoggedUser();
+        System.out.println("isModified 1[" + loggedUser.getAnswer()+"][" +loggedUser.getEmail()+"]["+loggedUser.getQuiz()+"]["+loggedUser.getPassword());
         rtn = !answer.getText().equals(loggedUser.getAnswer()) ||
-                !email.getText().equals(loggedUser.getEmail()) ||
+                (loggedUser.getEmail()!=null && !email.getText().equals(loggedUser.getEmail())) ||
                 quiz.getSelectionModel().getSelectedIndex() != loggedUser.getQuiz()||
-                (!pw.getText().equals("")&&!pw.getText().equals(loggedUser.getPassword())) || 
+                (!pw.getText().equals("") &&!pw.getText().equals(loggedUser.getPassword())) || 
                 !conpw.getText().equals("")
                 //!pw.getText().equals(loggedUser.getPassword())
                 ;
+        System.out.println("isModified 2");
         return rtn;
     }
     private void animateMessage() {

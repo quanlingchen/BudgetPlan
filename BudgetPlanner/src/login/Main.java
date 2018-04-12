@@ -50,10 +50,7 @@ public class Main extends Application {
         //d.connect();
       try
       {
-         // List<User> users = new ArrayList<User>();
-        
-         // users.addAll(d.getUsers());
-         //Iterator<User> usI = users.iterator();
+          
             for (User temp : d.getUsers()) {
                 User.of(temp.getId()).setAnswer(temp.getAnswer());
                 User.of(temp.getId()).setQuiz(temp.getQuiz());
@@ -112,6 +109,8 @@ public class Main extends Application {
             return false;
         if(Authenticator.getInstance().addUser(userId)){
             loggedUser = User.of(userId);
+            //login as new user clean up plan list
+            Planner.getInstance().getAll().clear();
             gotoProfile(true);
             return true;
         } else return false;
@@ -138,6 +137,22 @@ public class Main extends Application {
                 && Authenticator.getInstance().getAnswer(userId).equals(answer);
         if(rtn){
             loggedUser = User.of(userId);
+            //get database---------------------
+            DBManager d= new DBManager();
+        //d.connect();
+      try
+      {
+          //init plan list
+            for (Plan temp : d.getPlan(userId)) {
+                System.out.println("read plan");
+                Plan.of(temp.getId()).setPlan(temp.getId(), temp.getName(), temp.getType(), temp.getComment());
+                Planner.getInstance().addPlan(temp.getId());
+                Planner.getInstance().setPlan(temp.getId(),temp);
+            }
+            
+      }catch (Exception ex){
+          System.out.println("Fail to load. main");
+      }//------------------read from database
             gotoProfile(true);
         }
         return rtn;
@@ -189,7 +204,22 @@ public class Main extends Application {
         if (Authenticator.getInstance().validate(userId, password)) {
             System.out.println("OK");
             loggedUser = User.of(userId);
+            //get database---------------------
+            DBManager d= new DBManager();
+        //d.connect();
+      try
+      {
+          //init plan list
+            for (Plan temp : d.getPlan(userId)) {
+                System.out.println("read plan");
+                Plan.of(temp.getId()).setPlan(temp.getId(), temp.getName(), temp.getType(), temp.getComment());
+                Planner.getInstance().addPlan(temp.getId());
+                Planner.getInstance().setPlan(temp.getId(),temp);
+            }
             
+      }catch (Exception ex){
+          System.out.println("Fail to load. main");
+      }//------------------read from database
             gotoProfile(false);
             return true;
         } else {
@@ -214,7 +244,10 @@ public class Main extends Application {
     
     void userLogout(){
         countLogin = new HashMap<>();
+        //loggedUser = null;
+        Planner.getInstance().removePlan(loggedUser.getId());
         loggedUser = null;
+        
         gotoLogin();
     }
     
@@ -257,6 +290,7 @@ public class Main extends Application {
     
     private void gotoPlan(int s, String t) {//
         try {
+            System.out.println("gotoPlan");
             stage.setTitle(getLoggedUser().getId()+"'s "+ Plan.of(t).getName() + " Plan detail");
             
             PlanDetailController plan = (PlanDetailController) replaceSceneContent("PlanDetail.fxml");
@@ -271,6 +305,8 @@ public class Main extends Application {
                     while ( Plan.has(Integer.toString(c))){
                         c++;
                     }
+                }else{
+                     Planner.getInstance().addPlan("1");
                 }
                 if(Planner.getInstance().addPlan(Integer.toString(c)))
                 listPlan = Plan.of(Integer.toString(c));
@@ -281,6 +317,23 @@ public class Main extends Application {
                 //profile.setWelcome("Please fill up profile.");
             }else{
                 listPlan = Plan.of(t);
+                //get database---------------------
+            DBManager d= new DBManager();
+        //d.connect();
+      try
+      {
+          //init plan list
+            for (Item temp : d.getItem(this.getLoggedUser().getId(),listPlan.getId())) {
+                System.out.println("read plan");
+                //Item it=Item.of(temp.getId());
+//.setItem(temp.getId(), temp.getName(), temp.getType(), temp.getComment());
+                Itemmer.getInstance().addItem(temp.getId());
+                Itemmer.getInstance().setItem(temp.getId(),temp);
+            }
+            
+      }catch (Exception ex){
+          System.out.println("Fail to load items. main");
+      }//------------------read from database
             }
             plan.setApp(this);
             //stage.setTitle("Plan detail");
