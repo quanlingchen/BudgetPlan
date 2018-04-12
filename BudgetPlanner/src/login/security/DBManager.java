@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*; 
 import login.model.User;
+import login.model.Plan;
+import login.model.Item;
 /**
  * Database Manager.
  * 
@@ -156,7 +158,7 @@ public class DBManager {
         return null;
     }
     
-    public Map<Integer,String> getQuizs(int i) throws Exception{
+    public Map<Integer,String> getQuizs(int i){
         Connection conn = null;
         Statement stmt = null;
         Map<Integer,String> q = new HashMap<Integer,String>();
@@ -189,70 +191,59 @@ public class DBManager {
       } catch(Exception ex) {
          System.out.println("ERROR: getQuizs" + ex.getMessage());
       }finally{
-            if (stmt!=null) stmt.close();
-            if (conn!=null)conn.close();
+             try{
+         if (stmt!=null) stmt.close();
+           if (conn!=null)conn.close();
+          } catch(Exception e){
+              System.out.println("ERROR: fail to getQuizs " + e.getMessage());}
         }
         return null;
     }
-   public List getUsers1(){
-       List<User> users= new ArrayList<User>();
-   // Create a named constant for the URL.
-      // NOTE: This value is specific for Java DB. jdbc:derby:AccountsDB;
-      
-      try
-      {
-        
-        Class.forName(DRIVER);
-        System.out.println("loading.");
-        
-        // Create a connection to the database.
-         Connection conn = DriverManager.getConnection(DB_URL);
-         System.out.println("Connection to Accounts.");
-         Statement stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("select * from " + TABLE_NAME);
+   public List<Plan> getPlan(String userId){
+       List<Plan> p = new ArrayList<>();
+       Connection conn = null;
+        Statement stmt = null;
+        //List<User> users = new ArrayList<User>();
+        try
+        {
+            Class.forName(DRIVER);
+            System.out.println("loading.");
+            conn = DriverManager.getConnection(DB_URL); 
+            System.out.println("Connection to Accounts.");
+            stmt = conn.createStatement();
+            String sql="select id, type, comment from plan where user_id='"+userId+"'";
+            ResultSet results = stmt.executeQuery(sql);
+            System.out.println("success: " + sql);
             ResultSetMetaData rsmd = results.getMetaData();
-            int numberCols = rsmd.getColumnCount();
-            for (int i=1; i<=numberCols; i++)
-            {
-                //print Column Names
-                System.out.print(rsmd.getColumnLabel(i)+"\t\t");  
-            }
-
-            System.out.println("\n-------------------------------------------------");
-
+           
             while(results.next())
             {
-                /*User user = User.of(results.getString(1));
-                user.fname = results.getString(1);
-                user.mname = results.getString(2);
-                user.lname = results.getString(3);
-                user.phone = results.getString(4);
-                user.email = results.getString(5);
-                user.password = results.getString(6);
-                user.birth = results.getDate(7);
-                user.hint = results.getString(8);
-                user.gender = results.getString(9);
-                user.account_number = results.getString(10);
-                user.quiz=results.getInt(11);
-                user.activation= results.getString(12);
-                user.validation = results.getString(13);
-                user.id=results.getInt(14);
-                users.add(user);*/
+                
+                Plan u=Plan.of(results.getString(1) );
+                 u.setComment(results.getString(3));
+                 u.setType(results.getInt(2));
+                 
+                p.add( Plan.of(results.getString(1) ));
             }
+            
             results.close();
             stmt.close();
-        
-        System.out.println("retrieve users table."); 
-        // Close the connection.
+            
          conn.close();
+         
          //stmt.close();
          System.out.println("Connection closed.");
-      }
-      catch(Exception ex)
-      {
-         System.out.println("ERROR: " + ex.getMessage());
-      }
-      return users;
+         return p;
+      } catch(Exception ex) {
+         System.out.println("ERROR: getPlan is 1" + ex.getMessage());
+      }finally{
+            try{
+            if (stmt!=null) stmt.close();
+            if (conn!=null)conn.close();} catch(Exception e){
+              System.out.println("ERROR: fail to getPlan 2" + e.getMessage());}
+   
+        }
+       return null;
    }
 
    public void createUser(User user){
@@ -295,7 +286,7 @@ public class DBManager {
    }
    public void updateUser(User user){
        Connection conn = null  ;
-      Statement stmt = null;
+      Statement stmt = null; String sql="";
       try
       {
         Class.forName(DRIVER);
@@ -303,8 +294,8 @@ public class DBManager {
           conn = DriverManager.getConnection(DB_URL);
          System.out.println("Connection to Accounts.");
           stmt = conn.createStatement();
-         String sql="";
-         
+        
+        
           sql="update users set  email ='"+user.getEmail() +"', pw='"+user.getPassword() +"',quiz ="+ user.getQuiz() +",answer='"+user.getAnswer() +"' where id ='"+user.getId() +"'";
          exe(stmt,sql);
         
@@ -324,4 +315,250 @@ public class DBManager {
               System.out.println("ERROR: fail to update user " + e.getMessage());}
    }
    }
+   public void createPlan(Plan plan){
+             Connection conn = null  ;
+      Statement stmt = null;String sql="";
+      try
+      {
+        Class.forName(DRIVER);
+        System.out.println("connect loading.");
+          conn = DriverManager.getConnection(DB_URL);
+         System.out.println("Connection to Accounts.");
+          stmt = conn.createStatement();
+         
+         
+          sql="INSERT INTO plan(user_id, id, type, comment, name)values('"+plan.getUserId() +"','"+plan.getId() +"',"+plan.getType() +",'"+plan.getComment() +"','"+plan.getName() +"')";
+         exe(stmt,sql);
+         conn.commit();//sql="select * from users";
+        
+            stmt.close();
+        conn.commit();
+        //System.out.println("retrieve users table."); 
+        // Close the connection.
+         conn.close();
+         //stmt.close();
+         System.out.println("Connection closed.");
+      }
+      catch(Exception ex)
+      {
+         System.out.println("ERROR: fail to inster plan 1" + ex.getMessage() + sql);
+      }finally{
+          try{
+         if (stmt!=null) stmt.close();
+           if (conn!=null)conn.close();
+          } catch(Exception e){
+              System.out.println("ERROR: fail to inster plan 2" + e.getMessage()+sql);}
+   }
+   }
+   public void updatePlan(Plan plan){
+       Connection conn = null  ;
+      Statement stmt = null;String sql="";
+      try
+      {
+        Class.forName(DRIVER);
+        System.out.println("connect loading.");
+          conn = DriverManager.getConnection(DB_URL);
+         System.out.println("Connection to Accounts.");
+          stmt = conn.createStatement();
+         
+         
+          sql="update plan set user_id ='"+plan.getUserId() +"', id='"+plan.getId() +"',type ="+ plan.getType() +",name='"+plan.getName() +"',comment='"+plan.getComment() +"' where user_id ='"+plan.getUserId() +"' and id ='"+plan.getId() +"'";
+         exe(stmt,sql);
+        
+            stmt.close();
+        conn.commit();
+         conn.close();
+         System.out.println("Connection closed.");
+      }
+      catch(Exception ex)
+      {
+         System.out.println("ERROR: fail to update plan 1" + ex.getMessage()+sql);
+      }finally{
+          try{
+         if (stmt!=null) stmt.close();
+           if (conn!=null)conn.close();
+          } catch(Exception e){
+              System.out.println("ERROR: fail to update plan 2" + e.getMessage()+sql);}
+   }
+   }
+   public void delPlan(Plan plan){
+       Connection conn = null  ;
+      Statement stmt = null;
+      try
+      {
+        Class.forName(DRIVER);
+        System.out.println("connect loading.");
+          conn = DriverManager.getConnection(DB_URL);
+         System.out.println("Connection to Accounts.");
+          stmt = conn.createStatement();
+         String sql="";
+         
+          sql="delete from plan where user_id ='"+plan.getUserId() +"' and id='"+plan.getId() +"'";
+         exe(stmt,sql);
+        
+            stmt.close();
+        conn.commit();
+         conn.close();
+         System.out.println("Connection closed.");
+      }
+      catch(Exception ex)
+      {
+         System.out.println("ERROR: fail to delete plan " + ex.getMessage());
+      }finally{
+          try{
+         if (stmt!=null) stmt.close();
+           if (conn!=null)conn.close();
+          } catch(Exception e){
+              System.out.println("ERROR: fail to delete plan " + e.getMessage());}
+   }
+   }
+   public void delItem(Item item){
+       Connection conn = null  ;
+      Statement stmt = null;
+      try
+      {
+        Class.forName(DRIVER);
+        System.out.println("connect loading.");
+          conn = DriverManager.getConnection(DB_URL);
+         System.out.println("Connection to Accounts.");
+          stmt = conn.createStatement();
+         String sql="";
+         
+          sql="delete from item where user_id ='"+item.getUserId() +"' and plan_id='"+item.getPlanId() +"' and id='"+item.getId() +"'";
+         exe(stmt,sql);
+        
+            stmt.close();
+        conn.commit();
+         conn.close();
+         System.out.println("Connection closed.");
+      }
+      catch(Exception ex)
+      {
+         System.out.println("ERROR: fail to delete plan " + ex.getMessage());
+      }finally{
+          try{
+         if (stmt!=null) stmt.close();
+           if (conn!=null)conn.close();
+          } catch(Exception e){
+              System.out.println("ERROR: fail to delete plan " + e.getMessage());}
+   }
+   }
+   public void createItem(Item item){
+             Connection conn = null  ;
+      Statement stmt = null;String sql="";
+      try
+      {
+        Class.forName(DRIVER);
+        System.out.println("connect loading.");
+          conn = DriverManager.getConnection(DB_URL);
+         System.out.println("Connection to Accounts.");
+          stmt = conn.createStatement();
+         
+         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+          sql="INSERT INTO item(user_id,plan_id,id, type, comment,name,c_date, amount)values('"+item.getUserId() +"','"+item.getPlanId()+"','"+item.getId() +"',"+item.getType() +",'"+item.getComment() +"','"+item.getName() +"','"+formatter.format(item.getDate()) +"',"+item.getAmount() +")";
+         exe(stmt,sql);
+         conn.commit();//sql="select * from users";
+        
+            stmt.close();
+        conn.commit();
+        //System.out.println("retrieve users table."); 
+        // Close the connection.
+         conn.close();
+         //stmt.close();
+         System.out.println("Connection closed.");
+      }
+      catch(Exception ex)
+      {
+         System.out.println("ERROR: fail to inster plan " + ex.getMessage()+sql);
+      }finally{
+          try{
+         if (stmt!=null) stmt.close();
+           if (conn!=null)conn.close();
+          } catch(Exception e){
+              System.out.println("ERROR: fail to inster plan " + e.getMessage()+sql);}
+   }
+   }
+   public void updateItem(Item item){
+       Connection conn = null  ;
+      Statement stmt = null;String sql="";
+      try
+      {
+        Class.forName(DRIVER);
+        System.out.println("connect loading.");
+          conn = DriverManager.getConnection(DB_URL);
+         System.out.println("Connection to Accounts.");
+          stmt = conn.createStatement();
+         
+          SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+          sql="update item set user_id ='"+item.getUserId() +"',plan_id ='"+item.getPlanId() +"', id='"+item.getId() +"',type ="+ item.getType() +",name='"+item.getName() +"',comment='"+item.getComment() +"',c_date='"+formatter.format(item.getDate()) +"',amount="+item.getAmount() +" where user_id ='"+item.getUserId() +"' and id ='"+item.getId() +"'and plan_id ='"+item.getPlanId() +"'";
+         exe(stmt,sql);
+        
+            stmt.close();
+        conn.commit();
+         conn.close();
+         System.out.println("Connection closed.");
+      }
+      catch(Exception ex)
+      {
+         System.out.println("ERROR: fail to update item 1" + ex.getMessage()+sql);
+      }finally{
+          try{
+         if (stmt!=null) stmt.close();
+           if (conn!=null)conn.close();
+          } catch(Exception e){
+              System.out.println("ERROR: fail to update item 2" + e.getMessage()+sql);}
+   }
+   }
+   
+   
+   
+   public List<Item> getItem(String userId,String planId){
+       List<Item> p = new ArrayList<>();
+       Connection conn = null;
+        Statement stmt = null;
+        String sql ="";
+        //List<User> users = new ArrayList<User>();
+        try
+        {
+            Class.forName(DRIVER);
+            System.out.println("loading.");
+            conn = DriverManager.getConnection(DB_URL); 
+            System.out.println("Connection to Accounts.");
+            stmt = conn.createStatement();
+            sql="select id, type, comment,c_date, amount from item where user_id='"+userId+"' and plan_id='"+planId+"' ";
+            ResultSet results = stmt.executeQuery(sql);
+            System.out.println("success: " + sql);
+            ResultSetMetaData rsmd = results.getMetaData();
+           
+            while(results.next())
+            {
+                
+                Item u=Item.of(results.getString(1) );
+                 u.setComment(results.getString(3));
+                 u.setType(results.getInt(2));
+                 u.setDate(results.getDate(4));
+                 u.setAmount(results.getDouble(5));
+                p.add( Item.of(results.getString(1) ));
+            }
+            
+            results.close();
+            stmt.close();
+            
+         conn.close();
+         
+         //stmt.close();
+         System.out.println("Connection closed.");
+         return p;
+      } catch(Exception ex) {
+         System.out.println("ERROR: getItem is 1" + ex.getMessage()+sql);
+      }finally{
+            try{
+            if (stmt!=null) stmt.close();
+            if (conn!=null)conn.close();} catch(Exception e){
+              System.out.println("ERROR: fail to getItem 2" + e.getMessage()+sql);}
+   
+        }
+       return null;
+   }
+
 }
