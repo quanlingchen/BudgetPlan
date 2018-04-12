@@ -105,7 +105,9 @@ public class ItemDetailController extends AnchorPane {
         if(listedItem.getDate()!=null){
             System.out.println("try to set date");
             //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
-            date.setValue(listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            //date.setValue(listedItem.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            
+            date.setValue(Instant.ofEpochMilli(listedItem.getDate().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
             System.out.println("try to set date success");
         }
         
@@ -130,7 +132,7 @@ public class ItemDetailController extends AnchorPane {
             return;
         }
         System.out.println("b4 reset will remove item" );
-        processReset( event);
+        //processReset( event);
        
         System.out.println("will remove item" );
         if(isNew )

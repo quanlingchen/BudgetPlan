@@ -76,7 +76,7 @@ public class LoginController extends AnchorPane {
                     answer.setVisible(true);
                 }else if(event.getSource().toString().endsWith("'Login'")){
                     if (application.countLogin.containsKey(userId.getText())&& (application.countLogin.get(userId.getText())>=3)){
-                       errorMessage.setText("User [" + userId.getText()+ "] had try to login more than 3 times");
+                       errorMessage.setText("User [" + userId.getText()+ "] had try to login more than 3 times! will Lock out for login");
                     }else if (!application.userLogging(userId.getText(), password.getText())){
                         //check answer is match or not
                         if (!(answer.visibleProperty().getValue() && 
